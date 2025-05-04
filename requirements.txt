@@ -1,0 +1,5 @@
+Flask~=3.1.0
+flasgger~=0.9.7.1
+joblib~=1.5.0
+requests~=2.32.3
+sentiment-analysis-preprocessing @ git+https://github.com/remla2025-team9/lib-ml.git
