@@ -18,7 +18,7 @@ SERVICE_HOST # The host on which the service will run. Default is 0.0.0.0
 Then, you can run the Flask app using the following command:
 
 ```bash
-pyton app/main.py
+python app/main.py
 ```
 
 Then open localhost:8080 (or the port you specified) in your browser to see the app running.
