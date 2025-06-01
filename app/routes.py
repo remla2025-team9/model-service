@@ -9,33 +9,62 @@ bp = Blueprint('routes', __name__)
 @bp.route("/v1/predict", methods=["POST"])
 def predict():
     """
-        Submit a review message to be predicted as positive or negative.
-        ---
-        consumes:
-          - application/json
-        parameters:
-          - name: review
-            in: body
-            required: true
-            schema:
-              type: object
-              properties:
-                review:
-                  type: string
-            description: The review to be analyzed
-        responses:
-          200:
-            description: Prediction result.
-        """
+    Submit a review message to be predicted as positive or negative.
+    ---
+    tags:
+      - prediction
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - review
+          properties:
+            review:
+              type: string
+              description: The text review to be analyzed
+              example: "This movie was great!"
+    responses:
+      200:
+        description: Prediction successful
+        schema:
+          type: object
+          properties:
+            review:
+              type: string
+              description: The original review text
+            prediction:
+              type: integer
+              description: The sentiment prediction (0 for negative, 1 for positive)
+              enum: [0, 1]
+            prediction_confidence:
+              type: number
+              format: float
+              description: Confidence score of the prediction
+              minimum: 0
+              maximum: 1
+      400:
+        description: Invalid request (missing or invalid parameters)
+    """
     input_data = request.get_json()
     review = input_data.get("review")
 
     processed_review = prepare(review)
 
-    prediction = model.predict(processed_review.toarray())[0]
+    # Predict the sentiment of the review with probabilities
+    prediction = int(model.predict(processed_review.toarray())[0])
+    probabilities = model.predict_proba(processed_review.toarray())[0]
+    prediction_proba = round(float(probabilities[prediction]), 4)
     res = {
         "review": review,
-        "prediction": int(prediction),
+        "prediction": prediction,
+        "prediction_confidence": prediction_proba,
     }
 
     return jsonify(res)
@@ -49,7 +78,7 @@ def health():
           200:
             description: Service is healthy.
         """
-    return jsonify({"status": "healthy"})
+    return jsonify({"status": "healthy and running"})
 
 @bp.route("/version", methods=["GET"])
 def version():
