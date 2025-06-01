@@ -12,6 +12,7 @@ setup(
         "joblib~=1.5.0",
         "requests~=2.32.3",
         "sentiment-analysis-preprocessing @ git+https://github.com/remla2025-team9/lib-ml.git@v0.0.15",
+        "python-dotenv~=1.0.0",
     ],
     entry_points={
         "console_scripts": [

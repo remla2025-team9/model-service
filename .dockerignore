@@ -5,3 +5,5 @@
 .github
 .idea
 CODEOWNERS
+venv
+app/__pycache__

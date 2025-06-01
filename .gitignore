@@ -2,3 +2,8 @@
 .venv
 .cache
 /.env
+venv
+app/__pycache__
+build
+model_service.egg-info
+output

@@ -2,6 +2,9 @@ from flask import Flask
 from flasgger import Swagger
 from sentiment_analysis_preprocessing.preprocess import *
 from app.model_loader import init
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 swagger = Swagger(app)
