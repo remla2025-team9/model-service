@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint
-from sentiment_analysis_preprocessing.preprocess import *
+from sentiment_analysis_preprocessing.preprocesser import Preprocessor
 from app.model_loader import model
 from app.version import __version__
 
@@ -30,7 +30,8 @@ def predict():
     input_data = request.get_json()
     review = input_data.get("review")
 
-    processed_review = prepare(review)
+    preprocessor = Preprocessor()
+    processed_review = preprocessor.transform([review])
 
     prediction = model.predict(processed_review.toarray())[0]
     res = {

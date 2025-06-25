@@ -1,13 +1,12 @@
+import os
 from flask import Flask
 from flasgger import Swagger
-from sentiment_analysis_preprocessing.preprocess import *
 from app.model_loader import init
 
 app = Flask(__name__)
 swagger = Swagger(app)
 
 if __name__ == "__main__":
-    # Load the model
     init()
 
     port = os.getenv("SERVICE_PORT", 8080)

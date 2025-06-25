@@ -1,34 +1,41 @@
-FROM python:3.11.9-slim AS builder
+# This is the Multi-stage Dockerfile for the model-service
 
-WORKDIR /root
+# Build stage
+FROM python:3.11-slim AS builder
 
-RUN apt update \
-    && apt install git -y \
-    && apt clean \
+WORKDIR /build
+
+# Install git for pip to clone repositories
+RUN apt-get update \
+    && apt-get install -y git \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip
+# Copy setup file
+COPY setup.py .
 
-COPY app/ /root/app/
-COPY setup.py /root
-COPY data/ /root/data/
+# Install build dependencies and Python packages
+RUN python -m venv /build/venv \
+    && /build/venv/bin/pip install --upgrade pip \
+    && /build/venv/bin/pip install --no-cache-dir .
 
-RUN pip install .
+# Runtime stage
+FROM python:3.11-slim
 
-RUN python app/preprocessor_loader.py
+WORKDIR /app
 
-FROM python:3.11.9-slim
+# Copy virtual environment from builder
+COPY --from=builder /build/venv /app/venv
 
-WORKDIR /root
+# Copy application code
+COPY app/ ./app/
 
+# Set environment variables
 ARG VERSION
+ENV MODEL_SERVICE_VERSION=${VERSION}
 
-LABEL version=$VERSION
+LABEL version=${VERSION}
 
-ENV MODEL_SERVICE_VERSION=$VERSION
-
-COPY --from=builder /usr/local /usr/local
-COPY --from=builder /root/output/preprocessor.joblib /root/output/preprocessor.joblib
-
-ENTRYPOINT ["python"]
-CMD ["-m", "app.main"]
+# Set the entrypoint to the application
+# Use the virtual environment's Python interpreter
+CMD ["/app/venv/bin/python", "-m", "app.main"]

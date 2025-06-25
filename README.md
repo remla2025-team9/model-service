@@ -31,15 +31,43 @@ All workflows build Docker images with the service version passed as a build arg
 
 ### Installation
 
-1. Clone the repository:
+Using a virtual environment is recommended to avoid conflicts with other Python projects.
+
+1. **Clone the repository**:
 ```bash
 git clone <repository-url>
 cd model-service
 ```
 
-2. Install the required packages:
+2. **Create a virtual environment**:
+
+**On Windows (PowerShell):**
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+**On Windows (Command Prompt):**
+```cmd
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+**On macOS/Linux:**
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+3. **Install the required packages**:
+```bash
+pip install --upgrade pip
 pip install .
+```
+
+To deactivate the virtual environment when you're done:
+```bash
+deactivate
 ```
 
 ### Environment Variables
@@ -77,7 +105,24 @@ export SERVICE_HOST=0.0.0.0
 
 ### Running the Application
 
-Once you have set the required environment variables, run the Flask app:
+**If using a virtual environment, make sure it's activated first**:
+
+**On Windows (PowerShell):**
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+**On Windows (Command Prompt):**
+```cmd
+venv\Scripts\activate
+```
+
+**On macOS/Linux:**
+```bash
+source venv/bin/activate
+```
+
+Once you have set the required environment variables and activated your virtual environment (if using one), run the Flask app:
 
 ```bash
 python app/main.py
