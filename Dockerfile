@@ -11,8 +11,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy setup file
+# Copy setup file and app directory
 COPY setup.py .
+COPY app/ ./app/
 
 # Install build dependencies and Python packages
 RUN python -m venv /build/venv \

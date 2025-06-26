@@ -65,6 +65,23 @@ pip install --upgrade pip
 pip install .
 ```
 
+4. **Configure environment variables**:
+```bash
+cp .env.template .env
+```
+
+Then edit the `.env` file with your preferred text editor and set the required values:
+
+```bash
+# Required
+MODEL_VERSION=v1.0.0
+
+# Optional (defaults shown)
+SERVICE_HOST=0.0.0.0
+SERVICE_PORT=8080
+FLASK_DEBUG=False
+```
+
 To deactivate the virtual environment when you're done:
 ```bash
 deactivate
@@ -72,57 +89,18 @@ deactivate
 
 ### Environment Variables
 
-Before running the application, you need to configure the following environment variables:
+The application uses a `.env` file for configuration. Copy the template and modify as needed:
 
 | Variable        | Description                                   | Required | Default Value |
 | --------------- | --------------------------------------------- | -------- | ------------- |
 | `MODEL_VERSION` | The version of the model to use for inference | **Yes**  | None          |
-| `SERVICE_PORT`  | The port on which the service will run        | No       | 8080          |
 | `SERVICE_HOST`  | The host address to bind the service to       | No       | 0.0.0.0       |
-
-#### Setting Environment Variables
-
-**On Windows (PowerShell):**
-```powershell
-$env:MODEL_VERSION = "v1.0.0"
-$env:SERVICE_PORT = "8080"
-$env:SERVICE_HOST = "0.0.0.0"
-```
-
-**On Windows (Command Prompt):**
-```cmd
-set MODEL_VERSION=v1.0.0
-set SERVICE_PORT=8080
-set SERVICE_HOST=0.0.0.0
-```
-
-**On macOS/Linux (Bash):**
-```bash
-export MODEL_VERSION=v1.0.0
-export SERVICE_PORT=8080
-export SERVICE_HOST=0.0.0.0
-```
+| `SERVICE_PORT`  | The port on which the service will run        | No       | 8080          |
+| `FLASK_DEBUG`   | Enable Flask debug mode                       | No       | False         |
 
 ### Running the Application
 
-**If using a virtual environment, make sure it's activated first**:
-
-**On Windows (PowerShell):**
-```powershell
-.\venv\Scripts\Activate.ps1
-```
-
-**On Windows (Command Prompt):**
-```cmd
-venv\Scripts\activate
-```
-
-**On macOS/Linux:**
-```bash
-source venv/bin/activate
-```
-
-Once you have set the required environment variables and activated your virtual environment (if using one), run the Flask app:
+Once you have configured your `.env` file and activated your virtual environment (if using one), run the Flask app:
 
 ```bash
 python app/main.py
@@ -179,11 +157,11 @@ docker run \
 
 View logs:
 ```bash
-docker logs model-service-instance
+docker logs {{ CONTAINER_NAME }}
 ```
 
 Stop the container:
 ```bash
-docker stop model-service-instance
-docker rm model-service-instance
+docker stop {{ CONTAINER_NAME }}
+docker rm {{ CONTAINER_NAME }}
 ```
