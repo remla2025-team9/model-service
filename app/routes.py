@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint
-from sentiment_analysis_preprocessing.preprocess import *
-from app.model_loader import model
+from sentiment_analysis_preprocessing.preprocesser import Preprocessor
+from app.model_loader import load_model
 from app.version import __version__
 
 
@@ -55,12 +55,23 @@ def predict():
     input_data = request.get_json()
     review = input_data.get("review")
 
-    processed_review = prepare(review)
+    preprocessor = Preprocessor()
+    processed_review = preprocessor.transform([review])
 
-    # Predict the sentiment of the review with probabilities
-    prediction = int(model.predict(processed_review.toarray())[0])
-    probabilities = model.predict_proba(processed_review.toarray())[0]
+    # Load the model and vectorizer
+    model, vectorizer = load_model()
+
+    # Take the processed review and predict
+    feature_vector = vectorizer.transform(processed_review)
+
+    # Predict the sentiment
+    prediction = int(model.predict(feature_vector)[0])
+
+    # Get the prediction probabilities
+    probabilities = model.predict_proba(feature_vector)[0]
     prediction_proba = round(float(probabilities[prediction]), 4)
+
+    # Prepare the response
     res = {
         "review": review,
         "prediction": prediction,
